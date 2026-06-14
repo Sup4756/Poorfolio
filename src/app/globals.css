@@ -30,19 +30,23 @@
  
 /* Phần tử con đầu tiên (USERNAME/Logo) -> Căn sát lề trái */
 .HEADER > *:first-child {
+  display:flex;
   justify-content: flex-start;
-  padding-left: 24px; /* Thêm một chút khoảng cách để chữ không bị dính chặt vào mép màn hình */
+  padding-left: 50px; /* Thêm một chút khoảng cách để chữ không bị dính chặt vào mép màn hình */
 }
 
 /* Phần tử con ở giữa (LINKS) -> Vẫn giữ căn chính giữa như cũ */
 .HEADER > *:nth-child(2) {
+  display: flex;
   justify-content: center;
 }
 
+
 /* Phần tử con cuối cùng (CONTACT/Button) -> Căn sát lề phải */
 .HEADER > *:last-child {
+  display: flex;
   justify-content: flex-end;
-  padding-right: 24px; /* Thêm khoảng cách đệm bên phải cho cân đối với lề trái */
+  padding-right: 50px; 
 }
 
 
