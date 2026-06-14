@@ -1,23 +1,50 @@
 @import "tailwindcss";
 
+
+html, body {
+  cursor: url('../../public/pointer/pointer\ 3.png'), auto;
+}
+
+/* override importance cua cursors */
+a, button {
+  cursor: url('../..//public/pointer/hover\ 3.png'), pointer !important;
+}
+
+
+a, button, input[type="button"], input[type="submit"] {
+  cursor: url('../..//public/pointer/hover\ 3.png'), pointer;
+}
+
+
+.aa{
+color: #1778ff;
+}
+
 /* Giới hạn kích thước page */
 .MAINPAGE{
   min-height: 60%; /* Chiều cao tối thiểu bằng 100% màn hình hiển thị */
   min-width: 320px;
   width: 100%;
   overflow-x: auto;  /* BẮT BUỘC: Khi trình duyệt nhỏ hơn 320px, nó sẽ hiện thanh cuộn ngang thay vì bóp vỡ chữ */
+
+  
 }
 
 .HEADER {
 
   background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #b9e2fe 100%);
-  opacity: 60%;
+  opacity: 80%;
 
   /* Kích hoạt Flexbox để chia layout */
   display: flex;
   align-items: center; 
   min-height: 70px;
 
+  position: fixed;    /* Cố định phần tử so với khung hình trình duyệt */
+  top: 0;             /* Dính sát mép trên */
+  left: 0;            /* Dính sát mép trái */
+  width: 100%;        /* Trải dài hết chiều ngang màn hình */
+  z-index: 9999;      /* Đảm bảo header luôn nổi lên trên các phần tử khác khi cuộn */
 }
 
 .HEADER > * {
@@ -34,6 +61,7 @@
   justify-content: flex-start;
   padding-left: 50px; /* Thêm một chút khoảng cách để chữ không bị dính chặt vào mép màn hình */
 }
+
 
 /* Phần tử con ở giữa (LINKS) -> Vẫn giữ căn chính giữa như cũ */
 .HEADER > *:nth-child(2) {
@@ -128,7 +156,7 @@
   
   /* 3. Bo góc tròn và Xóa viền mặc định phiền phức */
   border: none;              /* Bỏ đường viền đen mặc định của trình duyệt */
-  border-radius: 50px;       /* Đặt số lớn (50px) để ép hai đầu nút bo tròn xòe như hình viên thuốc */
+  border-radius: 20px;       /* Đặt số lớn (50px) để ép hai đầu nút bo tròn xòe như hình viên thuốc */
   
   /* 4. Các hiệu ứng bổ trợ */
   cursor: pointer;           /* Biến con trỏ chuột thành hình bàn tay khi rê vào */
@@ -139,6 +167,7 @@
 /* ===== Hiệu ứng khi rê chuột vào nút (Hover) ===== */
 .CONTACT button:hover {
   background-color: #ff4da6; /* Đổi sang tone hồng cánh sen đậm hơn một chút */
+  
   transform: translateY(-2px); /* Nút nhích nhẹ lên 2px tạo cảm giác bồng bềnh */
   box-shadow: 0 6px 20px rgba(255, 102, 178, 0.5); /* Đổ bóng đậm hơn khi nhấc lên */
 }
@@ -147,4 +176,12 @@
 .CONTACT button:active {
   transform: translateY(1px); /* Khi bấm vào thì nút lún xuống 1px tạo cảm giác phản hồi vật lý cực thực */
   box-shadow: 0 2px 8px rgba(255, 102, 178, 0.3);
+}
+/*  */
+.ABOUT{
+  padding-top: 70px; /* Bằng hoặc lớn hơn một chút so với min-height của HEADER */
+  /* background: linear-gradient(135deg, #abdeff, #97fff6, #ff91b2); */
+  /* background-color: #c6e4ff; */
+  opacity: 60%;
+  padding-bottom: 1000px;
 }

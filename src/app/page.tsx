@@ -31,8 +31,12 @@ export default function Home() {
 
       </header>
 
-    {/*MAIN CONTENT*/}
+    {/*=====MAIN CONTENT=====*/}
 
+    {/* About */}
+    <div className="ABOUT">
+      jbsjkbdjksbvjk
+    </div>
     
   </div>
 
