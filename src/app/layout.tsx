@@ -30,10 +30,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative">
-        {/* 1. Gọi Component hạt lơ lửng ở đây để nó phủ làm hình nền */}
+        
         <FloatingParticles />
 
-        {/* 2. Nội dung chính của các trang web */}
         {children}
       </body>
     </html>
