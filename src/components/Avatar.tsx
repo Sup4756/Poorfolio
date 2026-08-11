@@ -22,7 +22,7 @@ type GLTFResult = GLTF & {
 }
 
 export function Model(props: React.JSX.IntrinsicElements['group']) {
-  const { nodes, materials } = useGLTF('/3Dassets/Avatar.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/3Dassets/Avatar.glb') as unknown as GLTFResult
   // const groupRef = useRef<THREE.Group>(null)
   const mesh1Ref = useRef<THREE.Mesh>(null)
   const mesh2Ref = useRef<THREE.Mesh>(null)
