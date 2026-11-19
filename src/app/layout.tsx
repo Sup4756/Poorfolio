@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Poorfolio of Sup", 
-  description: "Asthetic buh buh",
+  description: "A little corner of Sup’s world — Roblox creations, games, and good friends.",
 };
 
 export default function RootLayout({
