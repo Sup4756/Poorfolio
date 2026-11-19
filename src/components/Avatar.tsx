@@ -2,18 +2,39 @@
 
 import { useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
-import { Box3, Euler, FrontSide, Matrix4, Sphere, Vector3, type Mesh, type MeshStandardMaterial } from "three";
+import { Box3, Color, Euler, FrontSide, Matrix4, Sphere, Vector3, type Mesh, type MeshStandardMaterial } from "three";
 import type { GLTF } from "three-stdlib";
 
 export const MODEL_PATH = "/3Dassets/Avatar.glb";
 export const MODEL_RADIUS = 1.65;
+const GREEN_COLOR = "#39FF14";
+const GREEN_TINT_STRENGTH = 1;
 
 type AvatarGLTF = GLTF & {
   nodes: { xuantra_1: Mesh; xuantra_2: Mesh };
   materials: { Handle1Mtl: MeshStandardMaterial; Xuantra1Mtl: MeshStandardMaterial };
 };
 
-export function Model() {
+function AvatarMaterial({ material, green }: { material: MeshStandardMaterial; green: boolean }) {
+  // Tint a copy of the base color, preserving the texture and cached material.
+  const tintedColor = useMemo(
+    () => material.color.clone().lerp(new Color(GREEN_COLOR), GREEN_TINT_STRENGTH),
+    [material],
+  );
+
+  return (
+    <meshStandardMaterial
+      {...material}
+      color={green ? tintedColor : material.color}
+      transparent={false}
+      depthWrite={true}
+      depthTest={true}
+      side={FrontSide}
+    />
+  );
+}
+
+export function Model({ green = false }: { green?: boolean }) {
   const { nodes, materials } = useGLTF(MODEL_PATH) as unknown as AvatarGLTF;
   const { offset, scale } = useMemo(() => {
     // Center both meshes together after applying the asset's original orientation.
@@ -37,22 +58,10 @@ export function Model() {
           {/* The GLB uses BLEND and doubleSided. Keep the original opaque,
               front-face rendering so rear faces do not show through the avatar. */}
           <mesh geometry={nodes.xuantra_1.geometry}>
-            <meshStandardMaterial
-              {...materials.Handle1Mtl}
-              transparent={false}
-              depthWrite={true}
-              depthTest={true}
-              side={FrontSide}
-            />
+            <AvatarMaterial material={materials.Handle1Mtl} green={green} />
           </mesh>
           <mesh geometry={nodes.xuantra_2.geometry}>
-            <meshStandardMaterial
-              {...materials.Xuantra1Mtl}
-              transparent={false}
-              depthWrite={true}
-              depthTest={true}
-              side={FrontSide}
-            />
+            <AvatarMaterial material={materials.Xuantra1Mtl} green={green} />
           </mesh>
         </group>
       </group>

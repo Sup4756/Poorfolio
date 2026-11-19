@@ -8,6 +8,8 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Model, MODEL_PATH, MODEL_RADIUS } from "./Avatar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
+const SPIN_SPEEDS = [1, 2, 5, 10, 20, 50, 100, 150, 200, 500] as const;
+
 function ViewerMessage({ error = false, onRetry }: { error?: boolean; onRetry?: () => void }) {
   return (
     <div className="viewer-message" role="status">
@@ -27,9 +29,11 @@ class ViewerBoundary extends Component<{ children: ReactNode; onRetry: () => voi
   }
 }
 
-function AvatarScene({ interactive, paused, resetVersion, onReady }: {
+function AvatarScene({ interactive, paused, spinSpeed, green, resetVersion, onReady }: {
   interactive: boolean;
   paused: boolean;
+  spinSpeed: number;
+  green: boolean;
   resetVersion: number;
   onReady: () => void;
 }) {
@@ -64,7 +68,7 @@ function AvatarScene({ interactive, paused, resetVersion, onReady }: {
       <hemisphereLight args={["#f2faff", "#a3c8de", 1.7]} />
       <directionalLight position={[3, 5, 5]} intensity={2.4} />
       <directionalLight position={[-4, 2, -3]} intensity={1.5} color="#e1f4ff" />
-      <Model />
+      <Model green={green} />
       <OrbitControls
         ref={controls}
         makeDefault
@@ -76,7 +80,7 @@ function AvatarScene({ interactive, paused, resetVersion, onReady }: {
         rotateSpeed={0.55}
         dampingFactor={0.08}
         autoRotate={!paused && !reducedMotion}
-        autoRotateSpeed={0.45}
+        autoRotateSpeed={0.45 * spinSpeed}
         mouseButtons={{ LEFT: MOUSE.ROTATE }}
         touches={{ ONE: TOUCH.ROTATE }}
       />
@@ -90,6 +94,8 @@ function ViewerContent({ onRetry }: { onRetry: () => void }) {
   const [supported, setSupported] = useState<boolean | null>(null);
   const [touchInteraction, setTouchInteraction] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [speedIndex, setSpeedIndex] = useState(0);
+  const [green, setGreen] = useState(false);
   const [resetVersion, setResetVersion] = useState(0);
   const finePointer = useMediaQuery("(hover: hover) and (pointer: fine)");
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
@@ -138,7 +144,14 @@ function ViewerContent({ onRetry }: { onRetry: () => void }) {
             fallback={<ViewerMessage error onRetry={onRetry} />}
           >
             <Suspense fallback={null}>
-              <AvatarScene interactive={interactive} paused={paused} resetVersion={resetVersion} onReady={handleReady} />
+              <AvatarScene
+                interactive={interactive}
+                paused={paused}
+                spinSpeed={SPIN_SPEEDS[speedIndex]}
+                green={green}
+                resetVersion={resetVersion}
+                onReady={handleReady}
+              />
             </Suspense>
           </Canvas>
         )}
@@ -146,15 +159,35 @@ function ViewerContent({ onRetry }: { onRetry: () => void }) {
       {!ready && <ViewerMessage />}
       {ready && (
         <div className="viewer-toolbar">
-          <p>{interactive ? "Drag left or right to look around" : "A little spin, just for you"}</p>
+          <p>{interactive ? "Drag left or right to look around" : reducedMotion ? "Your avatar, taking it easy" : "A little spin, just for you"}</p>
           <div className="viewer-buttons">
             {!finePointer && (
               <button className="small-button" aria-pressed={touchInteraction} onClick={() => setTouchInteraction(!touchInteraction)}>
                 {touchInteraction ? "Done" : "Interact"}
               </button>
             )}
-            {!reducedMotion && <button className="small-button" aria-pressed={paused} onClick={() => setPaused(!paused)}>{paused ? "Resume spin" : "Pause spin"}</button>}
-            <button className="small-button" onClick={() => { setResetVersion((v) => v + 1); setPaused(true); setTouchInteraction(false); }}>Reset view</button>
+            {!reducedMotion && (
+              <>
+                <button
+                  className="small-button"
+                  title={`Cycle spin speed up to ${SPIN_SPEEDS[SPIN_SPEEDS.length - 1]}×, then back to 1×`}
+                  onClick={() => setSpeedIndex((index) => (index + 1) % SPIN_SPEEDS.length)}
+                >
+                  Speed: {SPIN_SPEEDS[speedIndex]}×
+                </button>
+                <button className="small-button" aria-pressed={paused} onClick={() => setPaused((value) => !value)}>{paused ? "Resume spin" : "Pause spin"}</button>
+              </>
+            )}
+            <button className="small-button green-button" aria-pressed={green} title="Toggle a soft green tint" onClick={() => setGreen((value) => !value)}>
+              Go green
+            </button>
+            <button className="small-button" onClick={() => {
+              setResetVersion((v) => v + 1);
+              setPaused(true);
+              setTouchInteraction(false);
+              setSpeedIndex(0);
+              setGreen(false);
+            }}>Reset view</button>
           </div>
         </div>
       )}
